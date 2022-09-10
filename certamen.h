@@ -69,3 +69,5 @@ bool revisarAlternativaSimple(tPregunta pregunta);
 bool revisarAlternativaMultiple(tPregunta pregunta);
 bool revisarVerdaderoFalso(tPregunta pregunta);
 bool revisarCompletar(tPregunta pregunta);
+
+#endif
