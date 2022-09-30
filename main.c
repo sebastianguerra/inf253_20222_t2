@@ -13,11 +13,12 @@ int main() {
     fscanf(CERTAMEN_TXT, "%d\n", &n);
 
     void* enunciados[n];
-    char* tipos[n];
+    char tipos[n][64];
     for (int i = 0; i < n; i++) {
         printf("\n");
         char tipo[64];
         fscanf(CERTAMEN_TXT, "%s\n", tipo);
+        strcpy(tipos[i], tipo);
         printf("intento: %d, tipo: %s\n", i, tipo);
 
         if (strcmp(tipo, "AlternativaSimple") == 0){
@@ -195,9 +196,9 @@ int main() {
     // muestra los enunciados por pantalla
     for (int i = 0; i < n; i++) {
         void* enunciado = enunciados[i];
-        char tipo[64];
-        strcpy(tipo, ((char*) enunciado));
-        printf("%s\n", tipo);
+        char enun[64];
+        strcpy(enun, ((char*) enunciado));
+        printf("tipo: %s   enunciado: %s\n", tipos[i], enun);
     }
 
     return 0;
