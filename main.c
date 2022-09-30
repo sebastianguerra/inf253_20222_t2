@@ -1,7 +1,57 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "certamen.h"
+
+void ejecutar_certamen(tCertamen* certamen){
+    // prueba que la informacion se haya almacenado correctamente en la estructura certamen
+    for(int i = 0; i < certamen->n_preguntas; i++){
+        tPregunta pregunta = certamen->preguntas[i];
+        printf("Pregunta %d: %s\n", i+1, pregunta.tipo);
+        if ( strcmp(pregunta.tipo, "AlternativaSimple") == 0 ){
+            tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta.enunciado;
+            printf("Enunciado: %s\n", enunciado->enunciado);
+            printf("Alternativas: \n");
+            for(int j = 0; j < enunciado->n_alternativas; j++){
+                printf("%d. %s\n", j+1, enunciado->alternativas[j]);
+            }
+            printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
+        }
+        if ( strcmp(pregunta.tipo, "AlternativaMultiple") == 0 ){
+            tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta.enunciado;
+            printf("Enunciado: %s\n", enunciado->enunciado);
+            printf("Alternativas: \n");
+            for(int j = 0; j < enunciado->n_alternativas; j++){
+                printf("%d. %s\n", j+1, enunciado->alternativas[j]);
+            }
+            printf("Alternativas correctas: \n");
+            for(int j = 0; j < enunciado->n_correctas; j++){
+                printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
+            }
+        }
+        if ( strcmp(pregunta.tipo, "VerdaderoFalso") == 0 ){
+            tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta.enunciado;
+            printf("Enunciado: %s\n", enunciado->enunciado);
+            printf("Respuesta: %s\n", enunciado->respuesta==1?"Verdadero":"Falso");
+        }
+        if ( strcmp(pregunta.tipo, "Completar") == 0 ){
+            tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta.enunciado;
+            printf("Enunciado: \n");
+            for(int j = 0; j < enunciado->n_textos; j++){
+                printf("%s\n", enunciado->textos[j]);
+            }
+            printf("Respuestas: \n");
+            for(int j = 0; j < enunciado->n_textos-1; j++){
+                printf("%s\n", enunciado->respuestas[j]);
+            }
+        }
+        printf("\n\n");
+    }
+
+
+}
+
 
 int main() {
     FILE *CERTAMEN_TXT = fopen("certamen.txt", "r");
@@ -29,7 +79,7 @@ int main() {
             char **alternativas = (char**) malloc(sizeof(char*) * n_alternativas);
             for (int j = 0; j < n_alternativas; j++){
                 char alternativa[128];
-                fscanf(CERTAMEN_TXT, "%[^\n]\n", &alternativa);
+                fscanf(CERTAMEN_TXT, "%[^\n]\n", alternativa);
                 alternativas[j] = (char*) malloc(sizeof(char) * (strlen(alternativa)+1));
                 strcpy(alternativas[j], alternativa);
             }
@@ -58,7 +108,7 @@ int main() {
             char **alternativas = (char**) malloc(sizeof(char*) * n_alternativas);
             for (int j = 0; j < n_alternativas; j++){
                 char alternativa[128];
-                fscanf(CERTAMEN_TXT, "%[^\n]\n", &alternativa);
+                fscanf(CERTAMEN_TXT, "%[^\n]\n", alternativa);
                 alternativas[j] = (char*) malloc(sizeof(char) * (strlen(alternativa)+1));
                 strcpy(alternativas[j], alternativa);
             }
@@ -106,7 +156,7 @@ int main() {
             char **textos = (char**) malloc(sizeof(char*) * n_textos);
             for (int j = 0; j < n_textos; j++){
                 char texto[128];
-                fscanf(CERTAMEN_TXT, "%[^\n]\n", &texto);
+                fscanf(CERTAMEN_TXT, "%[^\n]\n", texto);
                 textos[j] = (char*) malloc(sizeof(char) * (strlen(texto)+1));
                 strcpy(textos[j], texto);
             }
@@ -114,7 +164,7 @@ int main() {
             char **respuestas = (char**) malloc(sizeof(char*) * n_textos);
             for (int j = 0; j < n_textos-1; j++){
                 char respuesta[128];
-                fscanf(CERTAMEN_TXT, "%[^\n]\n", &respuesta);
+                fscanf(CERTAMEN_TXT, "%[^\n]\n", respuesta);
                 respuestas[j] = (char*) malloc(sizeof(char) * (strlen(respuesta)+1));
                 strcpy(respuestas[j], respuesta);
             }
@@ -133,61 +183,29 @@ int main() {
     fclose(CERTAMEN_TXT);
 
 
+
+    tCertamen* certamen = crearCertamen(n);
+
     for(int i = 0; i < n; i++){
-        printf("\n\nEnunciado %d %s\n", i+1, tipos[i]);
+        tPregunta* pregunta;
         if ( strcmp(tipos[i], "AlternativaSimple") == 0 ){
-            tEnunciadoAlternativa *enunciadoAlternativa = (tEnunciadoAlternativa*) enunciados[i];
-            printf("Enunciado: %s\n", enunciadoAlternativa->enunciado);
-            printf("Alternativas:\n");
-            for (int j = 0; j < enunciadoAlternativa->n_alternativas; j++){
-                printf("%d) %s\n", j+1, enunciadoAlternativa->alternativas[j]);
-            }
-            printf("Alternativa correcta: %d\n", enunciadoAlternativa->alternativa_correcta);
-            continue;
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
         }
         if ( strcmp(tipos[i], "AlternativaMultiple") == 0 ){
-            tEnunciadoAlternativaMultiple *enunciadoAlternativaMultiple = (tEnunciadoAlternativaMultiple*) enunciados[i];
-            printf("Enunciado: %s\n", enunciadoAlternativaMultiple->enunciado);
-            printf("Alternativas:\n");
-            for (int j = 0; j < enunciadoAlternativaMultiple->n_alternativas; j++){
-                printf("%d) %s\n", j+1, enunciadoAlternativaMultiple->alternativas[j]);
-            }
-            printf("Alternativas correctas: ");
-            for (int j = 0; j < enunciadoAlternativaMultiple->n_correctas; j++){
-                printf("%d ", enunciadoAlternativaMultiple->alternativa_correcta[j]);
-            }
-            printf("\n");
-            continue;
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
+            
         }
         if ( strcmp(tipos[i], "VerdaderoFalso") == 0 ){
-            tEnunciadoVerdaderoFalso *enunciadoVerdaderoFalso = (tEnunciadoVerdaderoFalso*) enunciados[i];
-            printf("Enunciado: %s\n", enunciadoVerdaderoFalso->enunciado);
-            printf("Respuesta: %s\n", enunciadoVerdaderoFalso->respuesta?"Verdadero":"Falso");
-            continue;
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
         }
         if ( strcmp(tipos[i], "Completar") == 0 ){
-            tEnunciadoCompletar *enunciadoCompletar = (tEnunciadoCompletar*) enunciados[i];
-            printf("Enunciado: ");
-            for (int j = 0; j < enunciadoCompletar->n_textos; j++){
-                printf("%s", enunciadoCompletar->textos[j]);
-                if (j < enunciadoCompletar->n_textos-1){
-                    printf(" __%s__ ", enunciadoCompletar->respuestas[j]);
-                }
-            }
-            printf("\n");
-            continue;
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
         }
+
+        asignarPregunta(certamen, i, pregunta);
     }
 
-
-
-    // // muestra los enunciados por pantalla
-    // for (int i = 0; i < n; i++) {
-    //     void* enunciado = enunciados[i];
-    //     char enun[64];
-    //     strcpy(enun, ((char*) enunciado));
-    //     printf("tipo: %s   enunciado: %s\n", tipos[i], enun);
-    // }
+    ejecutar_certamen(certamen);
 
     return 0;
 }

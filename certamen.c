@@ -21,7 +21,7 @@ tPregunta* crearPregunta(   tCertamen* certamen,
                             bool (*revisar)(void*, void*)){
     tPregunta* pregunta = (tPregunta*) malloc(sizeof(tPregunta));
 
-    strcpy(pregunta->tipo, tipo);
+    strcpy((char*)pregunta->tipo, tipo);
     pregunta->enunciado = enunciado;
     pregunta->respuesta = NULL;
     pregunta->revisar = revisar;
@@ -43,9 +43,8 @@ tPregunta leerPregunta(tCertamen* certamen, int n_pregunta){
 
 // Retorna el numero de respuestas correctas que tiene el certamen
 int nCorrectasCertamen(tCertamen certamen){
-    int i;
     int n_correctas = 0;
-    for (i = 0; i < certamen.n_preguntas; i++){
+    for (int i = 0; i < certamen.n_preguntas; i++){
         if (certamen.preguntas[i].revisar(certamen.preguntas[i].enunciado, certamen.preguntas[i].respuesta)){
             n_correctas++;
         }
@@ -60,14 +59,14 @@ int largoCertamen(tCertamen certamen){
 
 // Revisa si la respuesta a la pregunta es correcta
 bool revisarAlternativaSimple(tPregunta pregunta){
-    return false;
+    return pregunta.revisar(pregunta.enunciado, pregunta.respuesta);
 }
 bool revisarAlternativaMultiple(tPregunta pregunta){
-    return false;
+    return pregunta.revisar(pregunta.enunciado, pregunta.respuesta);
 }
 bool revisarVerdaderoFalso(tPregunta pregunta){
-    return false;
+    return pregunta.revisar(pregunta.enunciado, pregunta.respuesta);
 }
 bool revisarCompletar(tPregunta pregunta){
-    return false;
+    return pregunta.revisar(pregunta.enunciado, pregunta.respuesta);
 }
