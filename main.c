@@ -4,6 +4,9 @@
 
 #include "certamen.h"
 
+
+
+
 void ejecutar_alternativa_simple(tPregunta pregunta){
     tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta.enunciado;
     printf("Enunciado: %s\n", enunciado->enunciado);
@@ -42,8 +45,11 @@ void ejecutar_completar(tPregunta pregunta){
     }
 }
 
+
+
+
 void ejecutar_certamen(tCertamen* certamen){
-    for(int i = 0; i < certamen->n_preguntas; i++){
+    for(int i = 0; i < largoCertamen(*certamen); i++){
         tPregunta pregunta = leerPregunta(certamen, i);
 
         printf("\n");
@@ -67,10 +73,40 @@ void ejecutar_certamen(tCertamen* certamen){
 
         printf("\n");
     }
-
-
 }
 
+
+
+bool revisar_alternativa_simple(void* _enunciado, void* _respuesta){
+    tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) _enunciado;
+    int* respuesta = (int*) _respuesta;
+    return enunciado->alternativa_correcta == *respuesta;
+}
+bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
+    tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) _enunciado;
+    int* respuesta = (int*) _respuesta;
+    for(int i = 0; i < enunciado->n_correctas; i++){
+        if (enunciado->alternativa_correcta[i] != respuesta[i]){
+            return false;
+        }
+    }
+    return true;
+}
+bool revisar_verdadero_falso(void* _enunciado, void* _respuesta){
+    tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) _enunciado;
+    bool* respuesta = (bool*) _respuesta;
+    return enunciado->respuesta == *respuesta;
+}
+bool revisar_completar(void* _enunciado, void* _respuesta){
+    tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) _enunciado;
+    char** respuesta = (char**) _respuesta;
+    for(int i = 0; i < enunciado->n_textos-1; i++){
+        if (strcmp(enunciado->respuestas[i], respuesta[i]) != 0){
+            return false;
+        }
+    }
+    return true;
+}
 
 int main() {
     FILE *CERTAMEN_TXT = fopen("certamen.txt", "r");
@@ -209,19 +245,19 @@ int main() {
     for(int i = 0; i < n; i++){
         tPregunta* pregunta;
         if ( strcmp(tipos[i], "AlternativaSimple"   ) == 0 ){
-            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], revisar_alternativa_simple);
         } else
 
         if ( strcmp(tipos[i], "AlternativaMultiple" ) == 0 ){
-            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);    
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], revisar_alternativa_multiple);    
         } else
 
         if ( strcmp(tipos[i], "VerdaderoFalso"      ) == 0 ){
-            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], revisar_verdadero_falso);
         } else
-        
+
         if ( strcmp(tipos[i], "Completar"           ) == 0 ){
-            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], revisar_completar);
         }
 
         asignarPregunta(certamen, i, pregunta);
