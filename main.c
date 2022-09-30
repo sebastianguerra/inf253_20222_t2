@@ -4,49 +4,68 @@
 
 #include "certamen.h"
 
+void ejecutar_alternativa_simple(tPregunta pregunta){
+    tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta.enunciado;
+    printf("Enunciado: %s\n", enunciado->enunciado);
+    printf("Alternativas: \n");
+    for(int j = 0; j < enunciado->n_alternativas; j++){
+        printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
+    }
+    printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
+}
+void ejecutar_alternativa_multiple(tPregunta pregunta){
+    tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta.enunciado;
+    printf("Enunciado: %s\n", enunciado->enunciado);
+    printf("Alternativas: \n");
+    for(int j = 0; j < enunciado->n_alternativas; j++){
+        printf("%d. %s\n", j+1, enunciado->alternativas[j]);
+    }
+    printf("Alternativas correctas: \n");
+    for(int j = 0; j < enunciado->n_correctas; j++){
+        printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
+    }
+}
+void ejecutar_verdadero_falso(tPregunta pregunta){
+    tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta.enunciado;
+    printf("Enunciado: %s\n", enunciado->enunciado);
+    printf("Respuesta: %s\n", enunciado->respuesta?"Verdadero":"Falso");
+}
+void ejecutar_completar(tPregunta pregunta){
+    tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta.enunciado;
+    printf("Enunciado: \n");
+    for(int j = 0; j < enunciado->n_textos; j++){
+        printf("%s\n", enunciado->textos[j]);
+    }
+    printf("Respuestas: \n");
+    for(int j = 0; j < enunciado->n_textos-1; j++){
+        printf("%s\n", enunciado->respuestas[j]);
+    }
+}
+
 void ejecutar_certamen(tCertamen* certamen){
-    // prueba que la informacion se haya almacenado correctamente en la estructura certamen
     for(int i = 0; i < certamen->n_preguntas; i++){
-        tPregunta pregunta = certamen->preguntas[i];
+        tPregunta pregunta = leerPregunta(certamen, i);
+
+        printf("\n");
         printf("Pregunta %d: %s\n", i+1, pregunta.tipo);
-        if ( strcmp(pregunta.tipo, "AlternativaSimple") == 0 ){
-            tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta.enunciado;
-            printf("Enunciado: %s\n", enunciado->enunciado);
-            printf("Alternativas: \n");
-            for(int j = 0; j < enunciado->n_alternativas; j++){
-                printf("%d. %s\n", j+1, enunciado->alternativas[j]);
-            }
-            printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
-        }
+
+        if ( strcmp(pregunta.tipo, "AlternativaSimple"  ) == 0 ){
+            ejecutar_alternativa_simple(pregunta);
+        } else
+
         if ( strcmp(pregunta.tipo, "AlternativaMultiple") == 0 ){
-            tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta.enunciado;
-            printf("Enunciado: %s\n", enunciado->enunciado);
-            printf("Alternativas: \n");
-            for(int j = 0; j < enunciado->n_alternativas; j++){
-                printf("%d. %s\n", j+1, enunciado->alternativas[j]);
-            }
-            printf("Alternativas correctas: \n");
-            for(int j = 0; j < enunciado->n_correctas; j++){
-                printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
-            }
+            ejecutar_alternativa_multiple(pregunta);
+        } else
+
+        if ( strcmp(pregunta.tipo, "VerdaderoFalso"     ) == 0 ){
+            ejecutar_verdadero_falso(pregunta);
+        }else
+
+        if ( strcmp(pregunta.tipo, "Completar"          ) == 0 ){
+            ejecutar_completar(pregunta);
         }
-        if ( strcmp(pregunta.tipo, "VerdaderoFalso") == 0 ){
-            tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta.enunciado;
-            printf("Enunciado: %s\n", enunciado->enunciado);
-            printf("Respuesta: %s\n", enunciado->respuesta==1?"Verdadero":"Falso");
-        }
-        if ( strcmp(pregunta.tipo, "Completar") == 0 ){
-            tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta.enunciado;
-            printf("Enunciado: \n");
-            for(int j = 0; j < enunciado->n_textos; j++){
-                printf("%s\n", enunciado->textos[j]);
-            }
-            printf("Respuestas: \n");
-            for(int j = 0; j < enunciado->n_textos-1; j++){
-                printf("%s\n", enunciado->respuestas[j]);
-            }
-        }
-        printf("\n\n");
+
+        printf("\n");
     }
 
 
@@ -59,6 +78,7 @@ int main() {
         printf("Error opening file 'certamen.txt'");
         return 1;
     }
+
     int n;
     fscanf(CERTAMEN_TXT, "%d\n", &n);
 
@@ -188,17 +208,19 @@ int main() {
 
     for(int i = 0; i < n; i++){
         tPregunta* pregunta;
-        if ( strcmp(tipos[i], "AlternativaSimple") == 0 ){
+        if ( strcmp(tipos[i], "AlternativaSimple"   ) == 0 ){
             pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
-        }
-        if ( strcmp(tipos[i], "AlternativaMultiple") == 0 ){
+        } else
+
+        if ( strcmp(tipos[i], "AlternativaMultiple" ) == 0 ){
+            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);    
+        } else
+
+        if ( strcmp(tipos[i], "VerdaderoFalso"      ) == 0 ){
             pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
-            
-        }
-        if ( strcmp(tipos[i], "VerdaderoFalso") == 0 ){
-            pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
-        }
-        if ( strcmp(tipos[i], "Completar") == 0 ){
+        } else
+        
+        if ( strcmp(tipos[i], "Completar"           ) == 0 ){
             pregunta = crearPregunta(certamen, tipos[i], enunciados[i], NULL);
         }
 
