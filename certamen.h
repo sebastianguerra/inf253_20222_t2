@@ -1,6 +1,8 @@
 #ifndef CERTAMEN_H
 #define CERTAMEN_H
 
+#include <stdbool.h>
+
 typedef struct {
   char enunciado[128];
   int n_alternativas;
@@ -47,7 +49,7 @@ tPregunta* crearPregunta(
   tCertamen* certamen,
   char* tipo,
   void* enuncuado,
-  bool revisar(void*, void*));
+  bool (*revisar)(void*, void*));
 
 // Asigna la pregunta a la posicion n_pregunta del certamen
 void asignarPregunta(
@@ -59,7 +61,7 @@ void asignarPregunta(
 tPregunta leerPregunta(tCertamen* certamen, int n_pregunta);
 
 // Retorna el numero de respuestas correctas que tiene el certamen
-int nCorrectasCertamen(tCeramen certamen);
+int nCorrectasCertamen(tCertamen certamen);
 
 // Retorna el numero de preguntas en un certamen
 int largoCertamen(tCertamen certamen);

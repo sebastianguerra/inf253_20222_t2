@@ -1,6 +1,5 @@
-a.out: main.o certamen.o
-	gcc -g -Wall main.o certamen.o
-	make clean
+main: main.o certamen.o
+	gcc -g -Wall main.o certamen.o -o main
 
 main.o: main.c certamen.h
 	gcc -g -Wall -c main.c
@@ -14,10 +13,12 @@ clean:
 
 .PHONY: cleanall
 cleanall:
-	rm -f *.o a.out
+	rm -f *.o main
 
 .PHONY: debug
-debug: a.out
-	gdb a.out
+debug: main
+	gdb main
 
-
+.PHONY: run
+run: main
+	./main
