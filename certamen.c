@@ -37,8 +37,8 @@ void asignarPregunta (  tCertamen* certamen,
 }
 
 // Retorna la pregunta en la posicion n_pregunta del certamen
-tPregunta leerPregunta(tCertamen* certamen, int n_pregunta){
-    return certamen->preguntas[n_pregunta];
+tPregunta* leerPregunta(tCertamen* certamen, int n_pregunta){
+    return &certamen->preguntas[n_pregunta];
 }
 
 // Retorna el numero de respuestas correctas que tiene el certamen
