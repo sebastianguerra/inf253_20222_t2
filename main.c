@@ -14,7 +14,11 @@ void ejecutar_alternativa_simple(tPregunta pregunta){
     for(int j = 0; j < enunciado->n_alternativas; j++){
         printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
     }
-    printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
+    // printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
+    printf("Ingrese su respuesta: ");
+    int* respuesta = (int*) malloc(sizeof(int));
+    scanf("%d", respuesta);
+    pregunta.respuesta = respuesta;
 }
 void ejecutar_alternativa_multiple(tPregunta pregunta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta.enunciado;
@@ -23,15 +27,34 @@ void ejecutar_alternativa_multiple(tPregunta pregunta){
     for(int j = 0; j < enunciado->n_alternativas; j++){
         printf("%d. %s\n", j+1, enunciado->alternativas[j]);
     }
-    printf("Alternativas correctas: \n");
-    for(int j = 0; j < enunciado->n_correctas; j++){
-        printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
+//     printf("Alternativas correctas: \n");
+//     for(int j = 0; j < enunciado->n_correctas; j++){
+//         printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
+//     }
+    printf("Ingrese sus respuestas: ");
+    int* respuesta = (int*) malloc(sizeof(int) * enunciado->n_alternativas);
+    bool leyendo = true;
+    for(int j = 0; j < enunciado->n_alternativas; j++){
+        if (leyendo){
+            scanf("%d", &respuesta[j]);
+            if(getc(stdin) == '\n')
+                leyendo = false;
+        } else {
+            respuesta[j] = -1;
+        }
     }
+    pregunta.respuesta = respuesta;
 }
 void ejecutar_verdadero_falso(tPregunta pregunta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta.enunciado;
     printf("Enunciado: %s\n", enunciado->enunciado);
-    printf("Respuesta: %s\n", enunciado->respuesta?"Verdadero":"Falso");
+    // printf("Respuesta: %s\n", enunciado->respuesta?"Verdadero":"Falso");
+    printf("Ingrese su respuesta [V/F]: ");
+    bool* respuesta = (bool*) malloc(sizeof(bool));
+    char c;
+    scanf(" %c", &c);
+    *respuesta = c == 'V' || c == 'v';
+    pregunta.respuesta = respuesta;
 }
 void ejecutar_completar(tPregunta pregunta){
     tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta.enunciado;
@@ -39,10 +62,18 @@ void ejecutar_completar(tPregunta pregunta){
     for(int j = 0; j < enunciado->n_textos; j++){
         printf("%s\n", enunciado->textos[j]);
     }
-    printf("Respuestas: \n");
+    // printf("Respuestas: \n");
+    // for(int j = 0; j < enunciado->n_textos-1; j++){
+    //     printf("%s\n", enunciado->respuestas[j]);
+    // }
+    printf("Ingrese sus respuestas: \n");
+    char** respuesta = (char**) malloc(sizeof(char*) * (enunciado->n_textos-1));
     for(int j = 0; j < enunciado->n_textos-1; j++){
-        printf("%s\n", enunciado->respuestas[j]);
+        respuesta[j] = (char*) malloc(sizeof(char) * 100);
+        scanf("%[^\n]", respuesta[j]);
+        getc(stdin);
     }
+    pregunta.respuesta = respuesta;
 }
 
 
@@ -264,6 +295,8 @@ int main() {
     }
 
     ejecutar_certamen(certamen);
+
+    printf("Puntaje: %d\n", nCorrectasCertamen(*certamen));
 
     return 0;
 }
