@@ -345,5 +345,7 @@ int main() {
         }
     }
 
+    free(certamen);
+
     return 0;
 }

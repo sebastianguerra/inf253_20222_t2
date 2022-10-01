@@ -72,4 +72,4 @@ bool revisarAlternativaMultiple(tPregunta pregunta);
 bool revisarVerdaderoFalso(tPregunta pregunta);
 bool revisarCompletar(tPregunta pregunta);
 
-#endif
+#endif // CERTAMEN_H

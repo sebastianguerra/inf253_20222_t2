@@ -1,0 +1,1 @@
+Para probar la memoria tuve que usar un script de gdb porque no pude hacer funcionar Valgrind en Manjaro:(
