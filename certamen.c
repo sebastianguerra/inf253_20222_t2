@@ -34,6 +34,7 @@ void asignarPregunta (  tCertamen* certamen,
                         int n_pregunta,
                         tPregunta* pregunta){
     certamen->preguntas[n_pregunta] = *pregunta;
+    free(pregunta);
 }
 
 // Retorna la pregunta en la posicion n_pregunta del certamen

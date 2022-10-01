@@ -345,7 +345,78 @@ int main() {
         }
     }
 
+    
+    // Libera toda la memoria
+    for (int i = 0; i < largoCertamen(*certamen); i++){
+        tPregunta* pregunta = leerPregunta(certamen, i);
+        if ( strcmp(pregunta->tipo, "AlternativaSimple"   ) == 0 ){
+            tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta->enunciado;
+            for(int j = 0; j < enunciado->n_alternativas; j++){
+                free(enunciado->alternativas[j]);
+            }
+            free(enunciado->alternativas);
+
+
+            free(pregunta->respuesta);
+
+
+            free(enunciado);
+        } else
+
+        if ( strcmp(pregunta->tipo, "AlternativaMultiple" ) == 0 ){
+            tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta->enunciado;
+            free(enunciado->alternativa_correcta);
+            for(int j = 0; j < enunciado->n_alternativas; j++){
+                free(enunciado->alternativas[j]);
+            }
+            free(enunciado->alternativas);
+
+
+            free(pregunta->respuesta);
+
+
+            free(enunciado);
+        } else
+
+        if ( strcmp(pregunta->tipo, "VerdaderoFalso"      ) == 0 ){
+            tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta->enunciado;
+
+
+            free(pregunta->respuesta);
+
+
+            free(enunciado);
+        } else
+
+        if ( strcmp(pregunta->tipo, "Completar"           ) == 0 ){
+            tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta->enunciado;
+            for(int j = 0; j < enunciado->n_textos-1; j++){
+                free(enunciado->respuestas[j]);
+            }
+            free(enunciado->respuestas);
+            for(int j = 0; j < enunciado->n_textos; j++){
+                free(enunciado->textos[j]);
+            }
+            free(enunciado->textos);
+
+            char** respuesta = (char**) pregunta->respuesta;
+
+
+            for(int j = 0; j < enunciado->n_textos-1; j++){
+                free(respuesta[j]);
+            }
+            free(respuesta);
+
+
+            free(enunciado);
+        }
+    }
+    free(certamen->preguntas);
     free(certamen);
+    
+    fclose(stdin);
+    fclose(stdout);
+    
 
     return 0;
 }

@@ -1,4 +1,4 @@
-flags=-g -Wall -lefence
+flags=-g -Wall
 
 main: main.o certamen.o
 	gcc $(flags) main.o certamen.o -o main
