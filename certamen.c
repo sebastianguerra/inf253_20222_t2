@@ -37,7 +37,6 @@ Crea una pregunta con el enunciado y funcion de revision dados
     Retorno:
         pregunta ( tPregunta* ): Pregunta creada
 */
-*/
 tPregunta* crearPregunta(   tCertamen* certamen,
                             char* tipo,
                             void* enunciado,
@@ -62,7 +61,6 @@ Asigna la pregunta a la posicion n_pregunta del certamen
 
     Retorno:
         void
-*/
 */
 void asignarPregunta (  tCertamen* certamen,
                         int n_pregunta,

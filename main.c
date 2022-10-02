@@ -5,10 +5,10 @@
 #include "certamen.h"
 
 
-tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* archivo);
-tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* archivo);
-tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* archivo);
-tEnunciadoCompletar* leer_enunciado_completar(FILE* archivo);
+void* leer_enunciado_alternativa_simple(FILE* archivo);
+void* leer_enunciado_alternativa_multiple(FILE* archivo);
+void* leer_enunciado_verdadero_falso(FILE* archivo);
+void* leer_enunciado_completar(FILE* archivo);
 
 void* leer_enunciado(FILE* archivo, char* tipo);
 
@@ -100,7 +100,7 @@ int main() {
 
 
 
-tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
+void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
@@ -132,10 +132,10 @@ tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     enunciadoAlternativa->alternativas = alternativas;
     enunciadoAlternativa->alternativa_correcta = correcta;
 
-    return enunciadoAlternativa;
+    return (void*) enunciadoAlternativa;
 }
 
-tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
+void* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
@@ -174,10 +174,10 @@ tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAME
     enunciadoAlternativaMultiple->n_correctas = n_correctas;
     enunciadoAlternativaMultiple->alternativa_correcta = correctas;
 
-    return enunciadoAlternativaMultiple;
+    return (void*) enunciadoAlternativaMultiple;
 }
 
-tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
+void* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
@@ -192,10 +192,10 @@ tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     strcpy(enunciadoVerdaderoFalso->enunciado, enunciado);
     enunciadoVerdaderoFalso->respuesta = correcta=='V'?1:0;
 
-    return enunciadoVerdaderoFalso;
+    return (void*) enunciadoVerdaderoFalso;
 }
 
-tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
+void* leer_enunciado_completar(FILE* CERTAMEN_TXT){
     // linea con entero **n_textos**
     int n_textos;
     fscanf(CERTAMEN_TXT, "%d\n", &n_textos);
@@ -225,7 +225,7 @@ tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
     enunciadoCompletar->textos = textos;
     enunciadoCompletar->respuestas = respuestas;
 
-    return enunciadoCompletar;
+    return (void*) enunciadoCompletar;
 }
 
 void* leer_enunciado(FILE* archivo, char* tipo){
