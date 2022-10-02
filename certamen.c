@@ -86,12 +86,15 @@ bool revisarCompletar(tPregunta pregunta){
 
 
 tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
+    // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
+    // linea con el entero **n_alternativas**
     int n_alternativas;
     fscanf(CERTAMEN_TXT, "%d\n", &n_alternativas);
 
+    // **n_alternativas** lineas con un string que corresponde a cada alternativa
     char **alternativas = (char**) malloc(sizeof(char*) * n_alternativas);
     for (int j = 0; j < n_alternativas; j++){
         char alternativa[128];
@@ -100,27 +103,33 @@ tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
         strcpy(alternativas[j], alternativa);
     }
 
-
+    // linea con un entero correspondiente a la alternativa correcta
     int correcta;
     fscanf(CERTAMEN_TXT, "%d", &correcta);
 
-    tEnunciadoAlternativa *enunciadoAlternativa = (tEnunciadoAlternativa*) malloc(sizeof(tEnunciadoAlternativa));
+
+    // Crear estructura del enunciado
+    tEnunciadoAlternativa *enunciadoAlternativa;
+    enunciadoAlternativa = (tEnunciadoAlternativa*) malloc(sizeof(tEnunciadoAlternativa));
+
     strcpy(enunciadoAlternativa->enunciado, enunciado);
     enunciadoAlternativa->n_alternativas = n_alternativas;
     enunciadoAlternativa->alternativas = alternativas;
     enunciadoAlternativa->alternativa_correcta = correcta;
 
-
     return enunciadoAlternativa;
 }
 
 tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
+    // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
+    // linea con el entero **n_alternativas**
     int n_alternativas;
     fscanf(CERTAMEN_TXT, "%d\n", &n_alternativas);
 
+    // **n_alternativas** lineas con un string que corresponde a cada alternativa
     char **alternativas = (char**) malloc(sizeof(char*) * n_alternativas);
     for (int j = 0; j < n_alternativas; j++){
         char alternativa[128];
@@ -129,9 +138,11 @@ tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAME
         strcpy(alternativas[j], alternativa);
     }
 
+    // linea con entero **n_correctas**
     int n_correctas;
     fscanf(CERTAMEN_TXT, "%d\n", &n_correctas);
 
+    // **n_correctas** lineas con un entero correspondiente a cada alternativa correcta
     int *correctas = (int*) malloc(sizeof(int) * n_correctas);
     for (int j = 0; j < n_correctas; j++){
         int correcta;
@@ -139,6 +150,7 @@ tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAME
         correctas[j] = correcta;
     }
 
+    // Crear estructura del enunciado
     tEnunciadoAlternativaMultiple *enunciadoAlternativaMultiple = (tEnunciadoAlternativaMultiple*) malloc(sizeof(tEnunciadoAlternativaMultiple));
     strcpy(enunciadoAlternativaMultiple->enunciado, enunciado);
     enunciadoAlternativaMultiple->n_alternativas = n_alternativas;
@@ -146,29 +158,32 @@ tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAME
     enunciadoAlternativaMultiple->n_correctas = n_correctas;
     enunciadoAlternativaMultiple->alternativa_correcta = correctas;
 
-
     return enunciadoAlternativaMultiple;
 }
 
 tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
+    // linea con string **enunciado**
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
+    // linea con 'V' o 'F'
     char correcta;
     fscanf(CERTAMEN_TXT, "%c\n", &correcta);
 
+    // Crear estructura del enunciado
     tEnunciadoVerdaderoFalso *enunciadoVerdaderoFalso = (tEnunciadoVerdaderoFalso*) malloc(sizeof(tEnunciadoVerdaderoFalso));
     strcpy(enunciadoVerdaderoFalso->enunciado, enunciado);
     enunciadoVerdaderoFalso->respuesta = correcta=='V'?1:0;
-
 
     return enunciadoVerdaderoFalso;
 }
 
 tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
+    // linea con entero **n_textos**
     int n_textos;
     fscanf(CERTAMEN_TXT, "%d\n", &n_textos);
 
+    // **n_textos** lineas con un string que corresponde a una parte del texto que debe ser completado
     char **textos = (char**) malloc(sizeof(char*) * n_textos);
     for (int j = 0; j < n_textos; j++){
         char texto[128];
@@ -177,6 +192,7 @@ tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
         strcpy(textos[j], texto);
     }
 
+    // **n_textos**-1 lineas con un string que corresponde a la respuesta correcta
     char **respuestas = (char**) malloc(sizeof(char*) * n_textos);
     for (int j = 0; j < n_textos-1; j++){
         char respuesta[128];
@@ -185,12 +201,12 @@ tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
         strcpy(respuestas[j], respuesta);
     }
 
+
+    // Crear estructura del enunciado
     tEnunciadoCompletar *enunciadoCompletar = (tEnunciadoCompletar*) malloc(sizeof(tEnunciadoCompletar));
     enunciadoCompletar->n_textos = n_textos;
     enunciadoCompletar->textos = textos;
     enunciadoCompletar->respuestas = respuestas;
-
-
 
     return enunciadoCompletar;
 }
