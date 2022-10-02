@@ -150,6 +150,7 @@ tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAME
         correctas[j] = correcta;
     }
 
+
     // Crear estructura del enunciado
     tEnunciadoAlternativaMultiple *enunciadoAlternativaMultiple = (tEnunciadoAlternativaMultiple*) malloc(sizeof(tEnunciadoAlternativaMultiple));
     strcpy(enunciadoAlternativaMultiple->enunciado, enunciado);
@@ -169,6 +170,7 @@ tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     // linea con 'V' o 'F'
     char correcta;
     fscanf(CERTAMEN_TXT, "%c\n", &correcta);
+
 
     // Crear estructura del enunciado
     tEnunciadoVerdaderoFalso *enunciadoVerdaderoFalso = (tEnunciadoVerdaderoFalso*) malloc(sizeof(tEnunciadoVerdaderoFalso));
@@ -439,6 +441,6 @@ void liberar_certamen(tCertamen* certamen){
     }
 
     free(certamen->preguntas);
-    
+
     free(certamen);
 }
