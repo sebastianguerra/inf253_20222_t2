@@ -252,12 +252,14 @@ void ejecutar_alternativa_simple(tPregunta* pregunta){
     printf("%s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
-        printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
+        printf("\t%c) %s\n", j+97, enunciado->alternativas[j]);
     }
-    printf("[1-%d]: ", enunciado->n_alternativas);
+    printf("[a-%c]: ", enunciado->n_alternativas+97 - 1);
 
     int* respuesta = (int*) malloc(sizeof(int));
-    scanf("%d", respuesta);
+    char r;
+    scanf("%c", &r);
+    *respuesta = r - 97 + 1;
     pregunta->respuesta = respuesta;
 }
 void ejecutar_alternativa_multiple(tPregunta* pregunta){
@@ -266,17 +268,27 @@ void ejecutar_alternativa_multiple(tPregunta* pregunta){
     printf("Enunciado: %s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
-        printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
+        printf("\t%c) %s\n", j+97, enunciado->alternativas[j]);
     }
     printf("Ingresa las alternativas que consideres correctas (en una linea, ordenadas y separadas por un espacio):\n");
 
+    getc(stdin); // limpia un salto de linea
     int* respuesta = (int*) malloc(sizeof(int) * enunciado->n_alternativas);
     bool leyendo = true;
     for(int j = 0; j < enunciado->n_alternativas; j++){
         if (leyendo){
-            scanf("%d", &respuesta[j]);
-            if(getc(stdin) == '\n')
+            char r;
+            scanf("%c", &r);
+            if (r == ' '){
+                j--;
+                continue;
+            }
+            if (r == '\n'){
                 leyendo = false;
+                j--;
+                continue;
+            }
+            respuesta[j] = r - 97 + 1;
         } else {
             respuesta[j] = -1;
         }
@@ -364,9 +376,13 @@ bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) _enunciado;
     int* respuesta = (int*) _respuesta;
 
-    for(int i = 0; i < enunciado->n_correctas; i++){
-        if (enunciado->alternativa_correcta[i] != respuesta[i]){
-            return false;
+    for(int i = 0; i < enunciado->n_alternativas; i++){
+        if (i < enunciado->n_correctas){
+            if (respuesta[i] != enunciado->alternativa_correcta[i])
+                return false;
+        } else {
+            if (respuesta[i] != -1)
+                return false;
         }
     }
     return true;
