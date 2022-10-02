@@ -19,3 +19,4 @@ printf "Cantidad de mallocs sin liberar: %d\n", $CANTIDAD_DE_MALLOCS_SIN_LIBERAR
 continue
 end
 
+continue

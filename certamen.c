@@ -213,15 +213,16 @@ void* leer_enunciado(FILE* archivo, char* tipo){
 
 
 void ejecutar_alternativa_simple(tPregunta* pregunta){
-    tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta->enunciado;
-    printf("Enunciado: %s\n", enunciado->enunciado);
+    tEnunciadoAlternativa* enunciado;
+    enunciado = (typeof(enunciado)) pregunta->enunciado;
+    printf("%s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
         printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
     }
-    // printf("Alternativa correcta: %d\n", enunciado->alternativa_correcta);
-    printf("Ingrese su respuesta: ");
+
     int* respuesta = (int*) malloc(sizeof(int));
+    printf("[1-%d]: ", enunciado->n_alternativas);
     scanf("%d", respuesta);
     pregunta->respuesta = respuesta;
 }
@@ -230,13 +231,13 @@ void ejecutar_alternativa_multiple(tPregunta* pregunta){
     printf("Enunciado: %s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
-        printf("%d. %s\n", j+1, enunciado->alternativas[j]);
+        printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
     }
 //     printf("Alternativas correctas: \n");
 //     for(int j = 0; j < enunciado->n_correctas; j++){
 //         printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
 //     }
-    printf("Ingrese sus respuestas: ");
+    printf("Ingresa las alternativas que consideres correctas (en una linea, ordenadas y separadas por un espacio):\n");
     int* respuesta = (int*) malloc(sizeof(int) * enunciado->n_alternativas);
     bool leyendo = true;
     for(int j = 0; j < enunciado->n_alternativas; j++){
@@ -252,9 +253,9 @@ void ejecutar_alternativa_multiple(tPregunta* pregunta){
 }
 void ejecutar_verdadero_falso(tPregunta* pregunta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta->enunciado;
-    printf("Enunciado: %s\n", enunciado->enunciado);
+    printf("%s\n", enunciado->enunciado);
     // printf("Respuesta: %s\n", enunciado->respuesta?"Verdadero":"Falso");
-    printf("Ingrese su respuesta [V/F]: ");
+    printf("[V/F]: ");
     bool* respuesta = (bool*) malloc(sizeof(bool));
     char c;
     scanf(" %c", &c);
@@ -263,20 +264,27 @@ void ejecutar_verdadero_falso(tPregunta* pregunta){
 }
 void ejecutar_completar(tPregunta* pregunta){
     tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta->enunciado;
-    printf("Enunciado: \n");
-    for(int j = 0; j < enunciado->n_textos; j++){
-        printf("%s\n", enunciado->textos[j]);
+
+    printf("%s", enunciado->textos[0]);
+    for(int j = 1; j < enunciado->n_textos; j++){
+        printf(" __%d__ %s", j, enunciado->textos[j]);
     }
-    // printf("Respuestas: \n");
-    // for(int j = 0; j < enunciado->n_textos-1; j++){
-    //     printf("%s\n", enunciado->respuestas[j]);
-    // }
-    printf("Ingrese sus respuestas: \n");
+
     char** respuesta = (char**) malloc(sizeof(char*) * (enunciado->n_textos-1));
     for(int j = 0; j < enunciado->n_textos-1; j++){
+        printf("\n\t%d: ", j+1);
+
         respuesta[j] = (char*) malloc(sizeof(char) * 100);
         scanf("%[^\n]", respuesta[j]);
         getc(stdin);
+
+        printf("%s", enunciado->textos[0]);
+        for(int k = 1; k < enunciado->n_textos; k++){
+            if (k-1 <= j)
+                printf(" %s %s", respuesta[k-1], enunciado->textos[k]);
+            else
+                printf(" __%d__ %s", k, enunciado->textos[k]);
+        }
     }
     pregunta->respuesta = respuesta;
 }
@@ -289,7 +297,7 @@ void ejecutar_certamen(tCertamen* certamen){
         tPregunta* pregunta = leerPregunta(certamen, i);
 
         printf("\n");
-        printf("Pregunta %d: %s\n", i+1, pregunta->tipo);
+        printf("%d\n%s\n", i+1, pregunta->tipo);
 
         if ( strcmp(pregunta->tipo, "AlternativaSimple"  ) == 0 ){
             ejecutar_alternativa_simple(pregunta);
@@ -307,7 +315,7 @@ void ejecutar_certamen(tCertamen* certamen){
             ejecutar_completar(pregunta);
         }
 
-        printf("\n");
+        printf("\n\n");
     }
 }
 

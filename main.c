@@ -54,7 +54,7 @@ int main() {
 
     ejecutar_certamen(certamen);
 
-    printf("Puntaje: %d/%d\n", nCorrectasCertamen(*certamen), largoCertamen(*certamen));
+    printf("\nPuntaje: %d/%d\n", nCorrectasCertamen(*certamen), largoCertamen(*certamen));
 
 
     
