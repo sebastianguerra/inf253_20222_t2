@@ -360,6 +360,13 @@ void ejecutar_certamen(tCertamen* certamen){
             ejecutar_completar(pregunta);
         }
 
+        bool correcta = pregunta->revisar(pregunta->enunciado, pregunta->respuesta);
+        if (correcta){
+            printf("\nCorrecto!\n");
+        } else {
+            printf("\nIncorrecto!\n");
+        }
+
         printf("\n\n");
     }
 }
