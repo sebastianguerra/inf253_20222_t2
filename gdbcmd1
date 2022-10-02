@@ -1,3 +1,4 @@
+set pagination off
 start
 
 set $CANTIDAD_DE_MALLOCS_SIN_LIBERAR = 0
