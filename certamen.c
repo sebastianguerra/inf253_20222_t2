@@ -231,29 +231,28 @@ void* leer_enunciado(FILE* archivo, char* tipo){
 void ejecutar_alternativa_simple(tPregunta* pregunta){
     tEnunciadoAlternativa* enunciado;
     enunciado = (typeof(enunciado)) pregunta->enunciado;
+
     printf("%s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
         printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
     }
+    printf("[1-%d]: ", enunciado->n_alternativas);
 
     int* respuesta = (int*) malloc(sizeof(int));
-    printf("[1-%d]: ", enunciado->n_alternativas);
     scanf("%d", respuesta);
     pregunta->respuesta = respuesta;
 }
 void ejecutar_alternativa_multiple(tPregunta* pregunta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta->enunciado;
+
     printf("Enunciado: %s\n", enunciado->enunciado);
     printf("Alternativas: \n");
     for(int j = 0; j < enunciado->n_alternativas; j++){
         printf("\t%d) %s\n", j+1, enunciado->alternativas[j]);
     }
-//     printf("Alternativas correctas: \n");
-//     for(int j = 0; j < enunciado->n_correctas; j++){
-//         printf("%d. %d\n", j+1, enunciado->alternativa_correcta[j]);
-//     }
     printf("Ingresa las alternativas que consideres correctas (en una linea, ordenadas y separadas por un espacio):\n");
+
     int* respuesta = (int*) malloc(sizeof(int) * enunciado->n_alternativas);
     bool leyendo = true;
     for(int j = 0; j < enunciado->n_alternativas; j++){
@@ -269,9 +268,10 @@ void ejecutar_alternativa_multiple(tPregunta* pregunta){
 }
 void ejecutar_verdadero_falso(tPregunta* pregunta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta->enunciado;
+
     printf("%s\n", enunciado->enunciado);
-    // printf("Respuesta: %s\n", enunciado->respuesta?"Verdadero":"Falso");
     printf("[V/F]: ");
+
     bool* respuesta = (bool*) malloc(sizeof(bool));
     char c;
     scanf(" %c", &c);
@@ -285,10 +285,11 @@ void ejecutar_completar(tPregunta* pregunta){
     for(int j = 1; j < enunciado->n_textos; j++){
         printf(" __%d__ %s", j, enunciado->textos[j]);
     }
+    printf("\n");
 
     char** respuesta = (char**) malloc(sizeof(char*) * (enunciado->n_textos-1));
     for(int j = 0; j < enunciado->n_textos-1; j++){
-        printf("\n\t%d: ", j+1);
+        printf("\t%d: ", j+1);
 
         respuesta[j] = (char*) malloc(sizeof(char) * 100);
         scanf("%[^\n]", respuesta[j]);
@@ -301,19 +302,18 @@ void ejecutar_completar(tPregunta* pregunta){
             else
                 printf(" __%d__ %s", k, enunciado->textos[k]);
         }
+        printf("\n");
     }
     pregunta->respuesta = respuesta;
 }
-
-
-
 
 void ejecutar_certamen(tCertamen* certamen){
     for(int i = 0; i < largoCertamen(*certamen); i++){
         tPregunta* pregunta = leerPregunta(certamen, i);
 
         printf("\n");
-        printf("%d\n%s\n", i+1, pregunta->tipo);
+        printf("%d\n", i+1);
+        printf("%s\n", pregunta->tipo);
 
         if ( strcmp(pregunta->tipo, "AlternativaSimple"  ) == 0 ){
             ejecutar_alternativa_simple(pregunta);
@@ -340,11 +340,13 @@ void ejecutar_certamen(tCertamen* certamen){
 bool revisar_alternativa_simple(void* _enunciado, void* _respuesta){
     tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) _enunciado;
     int* respuesta = (int*) _respuesta;
+
     return enunciado->alternativa_correcta == *respuesta;
 }
 bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) _enunciado;
     int* respuesta = (int*) _respuesta;
+
     for(int i = 0; i < enunciado->n_correctas; i++){
         if (enunciado->alternativa_correcta[i] != respuesta[i]){
             return false;
@@ -355,11 +357,13 @@ bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
 bool revisar_verdadero_falso(void* _enunciado, void* _respuesta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) _enunciado;
     bool* respuesta = (bool*) _respuesta;
+
     return enunciado->respuesta == *respuesta;
 }
 bool revisar_completar(void* _enunciado, void* _respuesta){
     tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) _enunciado;
     char** respuesta = (char**) _respuesta;
+
     for(int i = 0; i < enunciado->n_textos-1; i++){
         if (strcmp(enunciado->respuestas[i], respuesta[i]) != 0){
             return false;
@@ -368,34 +372,34 @@ bool revisar_completar(void* _enunciado, void* _respuesta){
     return true;
 }
 
+
+
 void liberar_certamen(tCertamen* certamen){
     for (int i = 0; i < largoCertamen(*certamen); i++){
         tPregunta* pregunta = leerPregunta(certamen, i);
         if ( strcmp(pregunta->tipo, "AlternativaSimple"   ) == 0 ){
             tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) pregunta->enunciado;
+
             for(int j = 0; j < enunciado->n_alternativas; j++){
                 free(enunciado->alternativas[j]);
             }
             free(enunciado->alternativas);
 
-
             free(pregunta->respuesta);
-
 
             free(enunciado);
         } else
 
         if ( strcmp(pregunta->tipo, "AlternativaMultiple" ) == 0 ){
             tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta->enunciado;
+
             free(enunciado->alternativa_correcta);
             for(int j = 0; j < enunciado->n_alternativas; j++){
                 free(enunciado->alternativas[j]);
             }
             free(enunciado->alternativas);
 
-
             free(pregunta->respuesta);
-
 
             free(enunciado);
         } else
@@ -403,26 +407,26 @@ void liberar_certamen(tCertamen* certamen){
         if ( strcmp(pregunta->tipo, "VerdaderoFalso"      ) == 0 ){
             tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta->enunciado;
 
-
             free(pregunta->respuesta);
-
 
             free(enunciado);
         } else
 
         if ( strcmp(pregunta->tipo, "Completar"           ) == 0 ){
             tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta->enunciado;
+
             for(int j = 0; j < enunciado->n_textos-1; j++){
                 free(enunciado->respuestas[j]);
             }
             free(enunciado->respuestas);
+
             for(int j = 0; j < enunciado->n_textos; j++){
                 free(enunciado->textos[j]);
             }
             free(enunciado->textos);
 
-            char** respuesta = (char**) pregunta->respuesta;
 
+            char** respuesta = (char**) pregunta->respuesta;
 
             for(int j = 0; j < enunciado->n_textos-1; j++){
                 free(respuesta[j]);
@@ -433,6 +437,8 @@ void liberar_certamen(tCertamen* certamen){
             free(enunciado);
         }
     }
+
     free(certamen->preguntas);
+    
     free(certamen);
 }
