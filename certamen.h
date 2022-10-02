@@ -74,37 +74,4 @@ bool revisarCompletar(tPregunta pregunta);
 
 
 
-
-
-
-
-
-
-
-
-
-tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* archivo);
-tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* archivo);
-tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* archivo);
-tEnunciadoCompletar* leer_enunciado_completar(FILE* archivo);
-
-void* leer_enunciado(FILE* archivo, char* tipo);
-
-
-void ejecutar_alternativa_simple(tPregunta* pregunta);
-void ejecutar_alternativa_multiple(tPregunta* pregunta);
-void ejecutar_verdadero_falso(tPregunta* pregunta);
-void ejecutar_completar(tPregunta* pregunta);
-
-void ejecutar_certamen(tCertamen* certamen);
-
-
-bool revisar_alternativa_simple(void* _enunciado, void* _respuesta);
-bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta);
-bool revisar_verdadero_falso(void* _enunciado, void* _respuesta);
-bool revisar_completar(void* _enunciado, void* _respuesta);
-
-
-void liberar_certamen(tCertamen* certamen);
-
 #endif // CERTAMEN_H
