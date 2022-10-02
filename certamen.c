@@ -85,7 +85,7 @@ bool revisarCompletar(tPregunta pregunta){
 
 
 
-void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
+tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
@@ -111,10 +111,10 @@ void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     enunciadoAlternativa->alternativa_correcta = correcta;
 
 
-    return (void*) enunciadoAlternativa;
+    return enunciadoAlternativa;
 }
 
-void* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
+tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
@@ -147,10 +147,10 @@ void* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
     enunciadoAlternativaMultiple->alternativa_correcta = correctas;
 
 
-    return (void*) enunciadoAlternativaMultiple;
+    return enunciadoAlternativaMultiple;
 }
 
-void* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
+tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     char enunciado[128];
     fscanf(CERTAMEN_TXT, "%[^\n]\n", enunciado);
 
@@ -162,10 +162,10 @@ void* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     enunciadoVerdaderoFalso->respuesta = correcta=='V'?1:0;
 
 
-    return (void*) enunciadoVerdaderoFalso;
+    return enunciadoVerdaderoFalso;
 }
 
-void* leer_enunciado_completar(FILE* CERTAMEN_TXT){
+tEnunciadoCompletar* leer_enunciado_completar(FILE* CERTAMEN_TXT){
     int n_textos;
     fscanf(CERTAMEN_TXT, "%d\n", &n_textos);
 
@@ -192,21 +192,21 @@ void* leer_enunciado_completar(FILE* CERTAMEN_TXT){
 
 
 
-    return (void*) enunciadoCompletar;
+    return enunciadoCompletar;
 }
 
 void* leer_enunciado(FILE* archivo, char* tipo){
     if (strcmp(tipo, "AlternativaSimple") == 0)
-        return leer_enunciado_alternativa_simple(archivo);
+        return (void*) leer_enunciado_alternativa_simple(archivo);
 
     if (strcmp(tipo, "AlternativaMultiple") == 0)
-        return leer_enunciado_alternativa_multiple(archivo);
+        return (void*) leer_enunciado_alternativa_multiple(archivo);
 
     if (strcmp(tipo, "VerdaderoFalso") == 0)
-        return leer_enunciado_verdadero_falso(archivo);
+        return (void*) leer_enunciado_verdadero_falso(archivo);
 
     if (strcmp(tipo, "Completar") == 0)
-        return leer_enunciado_completar(archivo);
+        return (void*) leer_enunciado_completar(archivo);
 
     return NULL;
 }

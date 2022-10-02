@@ -83,10 +83,10 @@ bool revisarCompletar(tPregunta pregunta);
 
 
 
-void* leer_enunciado_alternativa_simple(FILE* archivo);
-void* leer_enunciado_alternativa_multiple(FILE* archivo);
-void* leer_enunciado_verdadero_falso(FILE* archivo);
-void* leer_enunciado_completar(FILE* archivo);
+tEnunciadoAlternativa* leer_enunciado_alternativa_simple(FILE* archivo);
+tEnunciadoAlternativaMultiple* leer_enunciado_alternativa_multiple(FILE* archivo);
+tEnunciadoVerdaderoFalso* leer_enunciado_verdadero_falso(FILE* archivo);
+tEnunciadoCompletar* leer_enunciado_completar(FILE* archivo);
 
 void* leer_enunciado(FILE* archivo, char* tipo);
 

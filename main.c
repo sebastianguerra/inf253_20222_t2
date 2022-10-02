@@ -57,14 +57,12 @@ int main() {
     printf("\nPuntaje: %d/%d\n", nCorrectasCertamen(*certamen), largoCertamen(*certamen));
 
 
-    
+
     // Libera toda la memoria
     liberar_certamen(certamen);
-    
-    
+
+
     fclose(stdin);
     fclose(stdout);
-    
-
     return 0;
 }
