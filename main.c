@@ -99,7 +99,15 @@ int main() {
 
 
 
+/*
+Lee un enunciado de tipo AlternativaSimple de acuerdo al formato indicado por el pdf
 
+    Parametros:
+        CERTAMEN_TXT ( FILE* ): archivo del que se leera el enunciado.
+    
+    Retorno:
+        enunciadoAlternativa ( void* ): estructura que almacena el enunciado.
+*/
 void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
@@ -112,7 +120,7 @@ void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
     // **n_alternativas** lineas con un string que corresponde a cada alternativa
     char **alternativas = (char**) malloc(sizeof(char*) * n_alternativas);
     for (int j = 0; j < n_alternativas; j++){
-        char alternativa[128];
+        char alternativa[128]; // longitud de alternativa: 128 dicho en aula
         fscanf(CERTAMEN_TXT, "%[^\n]\n", alternativa);
         alternativas[j] = (char*) malloc(sizeof(char) * (strlen(alternativa)+1));
         strcpy(alternativas[j], alternativa);
@@ -134,7 +142,15 @@ void* leer_enunciado_alternativa_simple(FILE* CERTAMEN_TXT){
 
     return (void*) enunciadoAlternativa;
 }
+/*
+Lee un enunciado de tipo AlternativaMultiple de acuerdo al formato indicado por el pdf
 
+    Parametros:
+        CERTAMEN_TXT ( FILE* ): archivo del que se leera el enunciado.
+    
+    Retorno:
+        enunciadoAlternativaMultiple ( void* ): estructura que almacena el enunciado.
+*/
 void* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
@@ -176,7 +192,15 @@ void* leer_enunciado_alternativa_multiple(FILE* CERTAMEN_TXT){
 
     return (void*) enunciadoAlternativaMultiple;
 }
+/*
+Lee un enunciado de tipo VerdaderoFalso de acuerdo al formato indicado por el pdf
 
+    Parametros:
+        CERTAMEN_TXT ( FILE* ): archivo del que se leera el enunciado.
+    
+    Retorno:
+        enunciadoVerdaderoFalso ( void* ): estructura que almacena el enunciado.
+*/
 void* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
     // linea con string **enunciado**
     char enunciado[128];
@@ -194,7 +218,15 @@ void* leer_enunciado_verdadero_falso(FILE* CERTAMEN_TXT){
 
     return (void*) enunciadoVerdaderoFalso;
 }
+/*
+Lee un enunciado de tipo Completar de acuerdo al formato indicado por el pdf
 
+    Parametros:
+        CERTAMEN_TXT ( FILE* ): archivo del que se leera el enunciado.
+    
+    Retorno:
+        enunciadoCompletar ( void* ): estructura que almacena el enunciado.
+*/
 void* leer_enunciado_completar(FILE* CERTAMEN_TXT){
     // linea con entero **n_textos**
     int n_textos;
@@ -227,7 +259,16 @@ void* leer_enunciado_completar(FILE* CERTAMEN_TXT){
 
     return (void*) enunciadoCompletar;
 }
+/*
+Delega la tarea de leer un enunciado a su funcion correspondiente de acuerdo al tipo indicado
 
+    Parametros:
+        archivo ( FILE* ): archivo del que se leera el enunciado.
+        tipo ( char* ): tipo de acuerdo al cual se intentara leer el enunciado
+    
+    Retorno:
+        ( void* ): puntero a la estructura que almacena el enunciado.
+*/
 void* leer_enunciado(FILE* archivo, char* tipo){
     if (strcmp(tipo, "AlternativaSimple") == 0)
         return (void*) leer_enunciado_alternativa_simple(archivo);
@@ -244,7 +285,15 @@ void* leer_enunciado(FILE* archivo, char* tipo){
     return NULL;
 }
 
+/*
+Muestra por pantalla el enunciado, las posibles respuestas y guarda la respuesta del usuario
 
+    Parametros:
+        pregunta ( tPregunta* ): pregunta de la que sacara los datos y donde almacenara la respuesta.
+    
+    Retorno:
+        ( void )
+*/
 void ejecutar_alternativa_simple(tPregunta* pregunta){
     tEnunciadoAlternativa* enunciado;
     enunciado = (typeof(enunciado)) pregunta->enunciado;
@@ -262,6 +311,15 @@ void ejecutar_alternativa_simple(tPregunta* pregunta){
     *respuesta = r - 97 + 1;
     pregunta->respuesta = respuesta;
 }
+/*
+Muestra por pantalla el enunciado, las posibles respuestas y guarda la respuesta del usuario
+
+    Parametros:
+        pregunta ( tPregunta* ): pregunta de la que sacara los datos y donde almacenara la respuesta.
+    
+    Retorno:
+        ( void )
+*/
 void ejecutar_alternativa_multiple(tPregunta* pregunta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) pregunta->enunciado;
 
@@ -295,6 +353,15 @@ void ejecutar_alternativa_multiple(tPregunta* pregunta){
     }
     pregunta->respuesta = respuesta;
 }
+/*
+Muestra por pantalla el enunciado, las posibles respuestas y guarda la respuesta del usuario
+
+    Parametros:
+        pregunta ( tPregunta* ): pregunta de la que sacara los datos y donde almacenara la respuesta.
+    
+    Retorno:
+        ( void )
+*/
 void ejecutar_verdadero_falso(tPregunta* pregunta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) pregunta->enunciado;
 
@@ -307,6 +374,15 @@ void ejecutar_verdadero_falso(tPregunta* pregunta){
     *respuesta = c == 'V' || c == 'v';
     pregunta->respuesta = respuesta;
 }
+/*
+Muestra por pantalla el enunciado, las posibles respuestas y guarda la respuesta del usuario
+
+    Parametros:
+        pregunta ( tPregunta* ): pregunta de la que sacara los datos y donde almacenara la respuesta.
+    
+    Retorno:
+        ( void )
+*/
 void ejecutar_completar(tPregunta* pregunta){
     tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) pregunta->enunciado;
 
@@ -336,6 +412,15 @@ void ejecutar_completar(tPregunta* pregunta){
     pregunta->respuesta = respuesta;
 }
 
+/*
+Muestra por pantalla el enunciado, las posibles respuestas y guarda la respuesta del usuario por cada pregunta.
+
+    Parametros:
+        certamen ( tCertamen* ): certamen de donde sacara las preguntas a mostrar.
+    
+    Retorno:
+        ( void )
+*/
 void ejecutar_certamen(tCertamen* certamen){
     for(int i = 0; i < largoCertamen(*certamen); i++){
         tPregunta* pregunta = leerPregunta(certamen, i);
@@ -373,12 +458,32 @@ void ejecutar_certamen(tCertamen* certamen){
 
 
 
+/*
+Revisa la respuesta de una pregunta de alternativa simple
+
+    Parametros:
+        _enunciado ( void* ): puntero al enunciado de donde se sacara la respuesta correcta
+        _respuesta ( void* ): puntero a la respuesta del usuario
+    
+    Retorno:
+        ( bool ): respuestas coindiden
+*/
 bool revisar_alternativa_simple(void* _enunciado, void* _respuesta){
     tEnunciadoAlternativa* enunciado = (tEnunciadoAlternativa*) _enunciado;
     int* respuesta = (int*) _respuesta;
 
     return enunciado->alternativa_correcta == *respuesta;
 }
+/*
+Revisa la respuesta de una pregunta de alternativa multiple
+
+    Parametros:
+        _enunciado ( void* ): puntero al enunciado de donde se sacara la respuesta correcta
+        _respuesta ( void* ): puntero a la respuesta del usuario
+    
+    Retorno:
+        ( bool ): respuestas coindiden
+*/
 bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
     tEnunciadoAlternativaMultiple* enunciado = (tEnunciadoAlternativaMultiple*) _enunciado;
     int* respuesta = (int*) _respuesta;
@@ -394,12 +499,32 @@ bool revisar_alternativa_multiple(void* _enunciado, void* _respuesta){
     }
     return true;
 }
+/*
+Revisa la respuesta de una pregunta verdadero y falso
+
+    Parametros:
+        _enunciado ( void* ): puntero al enunciado de donde se sacara la respuesta correcta
+        _respuesta ( void* ): puntero a la respuesta del usuario
+    
+    Retorno:
+        ( bool ): respuestas coindiden
+*/
 bool revisar_verdadero_falso(void* _enunciado, void* _respuesta){
     tEnunciadoVerdaderoFalso* enunciado = (tEnunciadoVerdaderoFalso*) _enunciado;
     bool* respuesta = (bool*) _respuesta;
 
     return enunciado->respuesta == *respuesta;
 }
+/*
+Revisa la respuesta de una pregunta tipo completar
+
+    Parametros:
+        _enunciado ( void* ): puntero al enunciado de donde se sacara la respuesta correcta
+        _respuesta ( void* ): puntero a la respuesta del usuario
+    
+    Retorno:
+        ( bool ): respuestas coindiden
+*/
 bool revisar_completar(void* _enunciado, void* _respuesta){
     tEnunciadoCompletar* enunciado = (tEnunciadoCompletar*) _enunciado;
     char** respuesta = (char**) _respuesta;
@@ -414,6 +539,15 @@ bool revisar_completar(void* _enunciado, void* _respuesta){
 
 
 
+/*
+Libera toda la memoria solicitada durante la ejecucion de un certamen
+
+    Parametros:
+        certamen ( tCertamen* ): puntero al certamen a eliminar
+    
+    Retorno:
+        ( void )
+*/
 void liberar_certamen(tCertamen* certamen){
     for (int i = 0; i < largoCertamen(*certamen); i++){
         tPregunta* pregunta = leerPregunta(certamen, i);
