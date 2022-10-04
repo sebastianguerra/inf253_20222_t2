@@ -23,7 +23,7 @@ debug: main
 
 .PHONY: memcheck
 memcheck: main
-	gdb --command=gdbcmd1 main
+	gdb --command=memcheck.gdb main
 
 .PHONY: run
 run: main
